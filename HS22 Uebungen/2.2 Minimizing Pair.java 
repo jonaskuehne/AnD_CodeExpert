@@ -1,0 +1,157 @@
+// ADDITIONAL IMPORTS ARE NOT ALLOWED
+
+class Main {
+  public static void main(String[] args) {
+    // Uncomment this line if you want to read from a file
+    // In.open("public/example.in");
+    // Out.compareTo("public/example.out");
+
+    int n = In.readInt(); //Read the size of Array;
+    int[] A = new int[n];
+    
+    int k = In.readInt(); // Read goal value
+    
+    // Read A
+    for(int i = 0; i < n; i++) {
+      A[i] = In.readInt(); 
+    }
+    
+    Out.println(minimize(n, A, k));
+    
+    // Uncomment this line if you want to read from a file
+    // In.close();
+  }
+    
+    
+  public static int minimize(int n, int[] A, int k) {
+    
+    int diff = Integer.MAX_VALUE;
+    
+    sort(A);
+    
+    for (int i = 0; i < n; ++i) {
+      
+      // search for:
+      int val = k - A[i];
+      
+      // res
+      int key = search(A, val);
+      
+      // not same
+      if (i != key) {
+        diff = Math.min(diff, Math.abs(A[i] + A[key] - k));
+      }
+      
+      // also check left / right if poss
+      
+      if (key > 0) {
+        diff = Math.min(diff, Math.abs(A[i] + A[key - 1] - k));
+      }
+      
+      if (key < n - 1) {
+        diff = Math.min(diff, Math.abs(A[i] + A[key + 1] - k));
+      }
+      
+    }
+
+    return diff;
+  }
+  
+  // search
+  public static int search(int[] in, int val) {
+    
+    int l = 0;
+    int r = in.length - 1;
+    
+    while (l <= r) {
+      
+      int m = (l + r) / 2;
+      
+      if (in[m] == val) {
+        return m;
+      }
+      
+      if (val < in[m]) {
+        r = m - 1;
+      } else {
+        l = m + 1;
+      }
+      
+    }
+    
+    return (l + r) / 2;
+    
+  }
+  
+  // sort
+  public static void sort(int[] in) {
+    
+    int n = in.length - 1;
+    
+    int length = 1;
+    
+    while (length <= n) {
+      
+      int l = 0;
+      
+      while (l < n) {
+        int m = Math.min(l + length - 1, n);
+        int r = Math.min(l + 2 * length - 1, n);
+        
+        merge(in, l, m, r);
+        
+        l += 2 * length;
+        
+      }
+      
+      length *= 2;
+      
+    }
+    
+  }
+  
+  public static void merge(int[] in, int l, int m, int r) {
+    int lSize = m - l + 1;
+    int rSize = r - m;
+    
+    int[] left = new int[lSize];
+    int[] right = new int[rSize];
+    
+    for (int i = 0; i < lSize; ++i) {
+      left[i] = in[i + l];
+    }
+    
+    for (int i = 0; i < rSize; ++i) {
+      right[i] = in[m + i + 1];
+    }
+    
+    int lP = 0;
+    int rP = 0;
+    int iP = l;
+    
+    while (lP < lSize && rP < rSize) {
+      if (left[lP] < right[rP]) {
+        in[iP] = left[lP];
+        ++lP;
+        ++iP;
+      } else {
+        in[iP] = right[rP];
+        ++rP;
+        ++iP;
+      }
+    }
+    
+    while (lP < lSize) {
+      in[iP] = left[lP];
+      ++lP;
+      ++iP;
+    }
+    
+    while (rP < rSize) {
+      in[iP] = right[rP];
+      ++rP;
+      ++iP;
+    }
+  }
+  
+}
