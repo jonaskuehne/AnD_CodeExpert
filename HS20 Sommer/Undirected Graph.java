@@ -300,6 +300,7 @@ class Graph{
     LinkedList<Integer> queue = new LinkedList<>();
     // init
     queue.add(v);
+    visited[v] = true;
     
     // bfs
     while (!queue.isEmpty()) {
@@ -309,12 +310,14 @@ class Graph{
       // for next edges
       for (int next : edges[curr]) {
         // use d instead of visited here (array-graph-dies-das)
-        if (d[next] == 0) {
+        if (!visited[next]) {
           queue.add(next);
           // get longest path
           d[next] = d[curr] + 1;
           // store max
           max = Math.max(max, d[next]);
+          // mark
+          visited[next] = true;
         }
         
       }
